@@ -1,5 +1,5 @@
 <?php 
-function binSearchInFile(string $fileName, string $key): string {
+function binSearchInFile(string $fileName, string $key): ?string {
 	$file = new SplFileObject($fileName, 'r');
     $file->seek($file->getSize());
     $end = $file->key();
@@ -10,23 +10,18 @@ function binSearchInFile(string $fileName, string $key): string {
         $file->seek($mid);
         $currentLine = $file->current();
         $currentArr = explode("\t", $currentLine);
-        
-		switch (strnatcmp($currentArr[0], $key)) {
-			case '1' : 
+        $comp = strnatcmp($currentArr[0], $key);
+		
+		switch ($comp) {
+			case 1 : 
 				$end = $mid - 1;
 				break;
-			case '-1' :
+			case -1 :
 				$start = $mid + 1;
 				break;
-			case '0' : 
+			case 0 : 
 				return $currentArr[1];
 		}
     }
-    return 'undef';
+	return null;
 }
-
-$fileName = 'test.txt';
-$key = "key17";
-$result = binSearchInFile($fileName, $key);
-echo $result;
-
